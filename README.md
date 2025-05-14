@@ -10,6 +10,6 @@ To this goal, the package has five important parts:
 2. a harness/protocol for semantic diff generation in other programs (`harness`)
 3. a test suite that captures many humanly-obvious mistake patterns (`tests`)
 4. a deterministic implementation that tries to meet the tests (`algorithm`)
-5. a LLM prompt/harness for hooking OpenRouter models up as differs (`prompt`)
+5. [TODO] a LLM prompt/harness for hooking OpenRouter models up as differs (`prompt`)
 
 As of writing, the deterministic system still performs better than LLMs— and is obviously much lower-latency and -cost. Eventually, though, to reiterate from above, I expect that LLMs will ultimately "solve" this problem. Since this package is designed with solutions in mind, it supports both, and will (1) make it possible to verify when LLMs get good at this, while also (2) enabling an elegant switchover once that happens.

@@ -4,8 +4,10 @@
     "": {
       "name": "semantic-diff",
       "dependencies": {
-        "@types/bun": "^1.2.13",
         "diff": "8.0.1",
+      },
+      "devDependencies": {
+        "@types/bun": "1.2.13",
       },
     },
   },

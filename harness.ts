@@ -1,5 +1,4 @@
 import diffWordsDeterministically from "./algorithm/diffWords"
-import diffWordsViaLLM from "./prompt/diffWords"
 import { validateDiff } from "./types/diff"
 import type { Diff } from "./types/diff"
 import { stringToWords, Word } from "./types/Word"
@@ -17,10 +16,8 @@ export function diffStrings(
 }
 
 function diffWords(expectedWords: Word[], actualWords: Word[], mode: DiffMode): Diff {
-  let result: Diff = {
-    deterministic: diffWordsDeterministically,
-    llm: diffWordsViaLLM,
-  }[mode](expectedWords, actualWords)
+  if (mode === "llm") throw "llm mode not implemented"
+  const result = diffWordsDeterministically(expectedWords, actualWords)
 
   // validate: diff must be in a proper format, not just typed correctly
   validateDiff(result)
