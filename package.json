@@ -1,12 +1,15 @@
 {
   "name": "semantic-diff",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Tool for describing differences between two strings.",
   "bugs": "https://github.com/BrennanColberg/semantic-diff/issues",
   "repository": "github:BrennanColberg/semantic-diff",
   "author": "Brennan Colberg <brennan.colberg@gmail.com> (https://brennancolberg.com)",
   "license": "MIT",
   "main": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "test": "bun test",
     "test:watch": "bun test --watch",

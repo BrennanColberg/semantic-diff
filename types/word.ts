@@ -28,3 +28,8 @@ export function wordToString(word: Word): string {
 export function wordsToString(words: Word[]): string {
   return words.map(wordToString).join(" ")
 }
+
+export function areWordsEqual(a: Word[], b: Word[]): boolean {
+  if (a.length !== b.length) return false
+  return a.every((word, index) => word.text === b[index].text)
+}

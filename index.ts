@@ -1,38 +1,40 @@
 import diffWordsDeterministically from "./algorithm/deterministic"
-import { validateSemanticDiff } from "./types/SemanticDiff"
-import type { SemanticDiff } from "./types/SemanticDiff"
-import { stringToWords, Word } from "./types/Word"
+import { validateDiff } from "./types/Diff"
+import type { Diff } from "./types/Diff"
+import { stringToWords, Word, areWordsEqual, wordsToString } from "./types/Word"
+import type { DiffElement, DiffElementType } from "./types/DiffElement"
 
-export type DiffMode = "deterministic" | "llm"
+// Re-export utils and types with more externally-descriptive names
+export {
+  diffToString as semanticDiffToString,
+  stringToDiff as stringToSemanticDiff,
+} from "./types/Diff"
+export { wordsToString, stringToWords, areWordsEqual } from "./types/Word"
+export type SemanticDiff = Diff
+export type SemanticDiffElement = DiffElement
+export type SemanticDiffElementType = DiffElementType
+export type SemanticDiffWord = Word
 
 export function semanticDiff(
   expected: string | Word[],
   actual: string | Word[],
-  mode: DiffMode = "deterministic",
-): SemanticDiff {
+  // TODO mode to switch between deterministic and LLM
+): Diff {
   const expectedWords = typeof expected === "string" ? stringToWords(expected) : expected
   const actualWords = typeof actual === "string" ? stringToWords(actual) : actual
 
-  if (mode === "llm") throw "llm mode not implemented"
+  // TODO optionally switch to LLM mode here (-> also make async)
   const result = diffWordsDeterministically(expectedWords, actualWords)
 
   // validate: diff must be in a proper format, not just typed correctly
-  validateSemanticDiff(result)
+  validateDiff(result)
   // validate: expected+actual words in diff must be same as inputted
-  const diffExpectedWords = result.flatMap((element) =>
-    "expected" in element ? element.expected : "words" in element ? element.words : [],
-  )
-  if (diffExpectedWords.map((w) => w.text).join(" ") !== expectedWords.map((w) => w.text).join(" "))
-    throw `expected words in diff must be same as inputted [${diffExpectedWords
-      .map((w) => w.text)
-      .join(" ")} !== ${expectedWords.map((w) => w.text).join(" ")}]`
-  const diffActualWords = result.flatMap((element) =>
-    "actual" in element ? element.actual : "words" in element ? element.words : [],
-  )
-  if (diffActualWords.map((w) => w.text).join(" ") !== actualWords.map((w) => w.text).join(" "))
-    throw `actual words in diff must be same as inputted [${diffActualWords
-      .map((w) => w.text)
-      .join(" ")} !== ${actualWords.map((w) => w.text).join(" ")}]`
+  const diffEW = result.flatMap((e) => ("expected" in e ? e.expected : "words" in e ? e.words : []))
+  if (!areWordsEqual(diffEW, expectedWords))
+    throw `expected words in diff must be same as inputted [${wordsToString(diffEW)} ≠ ${wordsToString(expectedWords)}]`
+  const diffAW = result.flatMap((e) => ("actual" in e ? e.actual : "words" in e ? e.words : []))
+  if (!areWordsEqual(diffAW, actualWords))
+    throw `actual words in diff must be same as inputted [${wordsToString(diffAW)} ≠ ${wordsToString(actualWords)}]`
 
   return result
 }
