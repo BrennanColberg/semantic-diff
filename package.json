@@ -2,7 +2,7 @@
   "name": "semantic-diff",
   "author": "Brennan Colberg <brennan.colberg@gmail.com>",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tool for describing differences between two strings.",
   "main": "harness.ts",
   "scripts": {

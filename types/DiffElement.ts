@@ -39,20 +39,20 @@ export function validateDiffElement(element: DiffElement): void | never {
 export function diffElementToString(element: DiffElement): string {
   switch (element.type) {
     case DiffElementType.EQUAL:
-      return `= ${wordsToString(element.words)}`
+      return `=${wordsToString(element.words)}`
     case DiffElementType.INSERT:
-      return `+ ${wordsToString(element.actual)}`
+      return `+${wordsToString(element.actual)}`
     case DiffElementType.OMIT:
-      return `- ${wordsToString(element.expected)}`
+      return `-${wordsToString(element.expected)}`
     case DiffElementType.REPLACE:
-      return `→ ${wordsToString(element.expected)} → ${wordsToString(element.actual)}`
+      return `→${wordsToString(element.expected)}→${wordsToString(element.actual)}`
     case DiffElementType.IGNORE:
-      return `? ${wordsToString(element.expected)}`
+      return `?${wordsToString(element.expected)}`
   }
 }
 
 export function stringToDiffElement(string: string): DiffElement {
-  const regex = string.match(/^(\S)\s+(.*)/)
+  const regex = string.match(/^([=+-→?])\s*(.*)/)
   if (!regex) throw "invalid diff element string"
   const [, type, wordsString] = regex
   switch (type) {
