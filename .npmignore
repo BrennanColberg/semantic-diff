@@ -1,1 +1,4 @@
 bun.lock
+.vscode
+.prettierrc
+*.test.ts
