@@ -1,12 +1,16 @@
 import { test, expect, describe } from "bun:test"
-import { stringToDiff } from "../types/diff"
-import { diffStrings } from "../harness"
+import { stringToSemanticDiff } from "../types/SemanticDiff"
+import { semanticDiff } from ".."
 
 describe("ignore", () => {
   test("at start", () => {
-    expect(diffStrings("one two three", "two three")).toEqual(stringToDiff("? one\n= two three"))
+    expect(semanticDiff("one two three", "two three")).toEqual(
+      stringToSemanticDiff("? one\n= two three"),
+    )
   })
   test("at end", () => {
-    expect(diffStrings("one two three", "one two")).toEqual(stringToDiff("= one two\n? three"))
+    expect(semanticDiff("one two three", "one two")).toEqual(
+      stringToSemanticDiff("= one two\n? three"),
+    )
   })
 })

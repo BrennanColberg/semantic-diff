@@ -1,18 +1,23 @@
 {
   "name": "semantic-diff",
-  "author": "Brennan Colberg <brennan.colberg@gmail.com>",
-  "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Tool for describing differences between two strings.",
-  "main": "harness.ts",
+  "homepage": "https://github.com/BrennanColberg/semantic-diff",
+  "bugs": "https://github.com/BrennanColberg/semantic-diff/issues",
+  "repository": "github:BrennanColberg/semantic-diff",
+  "author": "Brennan Colberg <brennan.colberg@gmail.com> (https://brennancolberg.com)",
+  "license": "MIT",
+  "main": "index.ts",
   "scripts": {
     "test": "bun test",
-    "test:watch": "bun test --watch"
+    "test:watch": "bun test --watch",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "diff": "8.0.1"
   },
   "devDependencies": {
-    "@types/bun": "1.2.13"
+    "@types/bun": "1.2.13",
+    "prettier": "3.5.3"
   }
 }

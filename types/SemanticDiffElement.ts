@@ -1,6 +1,6 @@
 import { stringToWords, validateWord, Word, wordsToString } from "./Word"
 
-export enum DiffElementType {
+export enum SemanticDiffElementType {
   /** Text that matches in the expected and actual. */
   EQUAL = "=",
   /** Text in the expected that was not in the actual. */
@@ -13,14 +13,14 @@ export enum DiffElementType {
   IGNORE = "?",
 }
 
-export type DiffElement =
-  | { type: DiffElementType.EQUAL; words: Word[] }
-  | { type: DiffElementType.INSERT; actual: Word[] }
-  | { type: DiffElementType.OMIT; expected: Word[] }
-  | { type: DiffElementType.REPLACE; expected: Word[]; actual: Word[] }
-  | { type: DiffElementType.IGNORE; expected: Word[] }
+export type SemanticDiffElement =
+  | { type: SemanticDiffElementType.EQUAL; words: Word[] }
+  | { type: SemanticDiffElementType.INSERT; actual: Word[] }
+  | { type: SemanticDiffElementType.OMIT; expected: Word[] }
+  | { type: SemanticDiffElementType.REPLACE; expected: Word[]; actual: Word[] }
+  | { type: SemanticDiffElementType.IGNORE; expected: Word[] }
 
-export function validateDiffElement(element: DiffElement): void | never {
+export function validateSemanticDiffElement(element: SemanticDiffElement): void | never {
   // every word must be valid
   if ("actual" in element) element.actual.forEach(validateWord)
   if ("expected" in element) element.expected.forEach(validateWord)
@@ -30,47 +30,47 @@ export function validateDiffElement(element: DiffElement): void | never {
   if ("expected" in element && element.expected.length === 0) throw "expected has no words"
   if ("words" in element && element.words.length === 0) throw "words has no words"
   // expected/actual in a replace must not be the same
-  if (element.type === DiffElementType.REPLACE) {
+  if (element.type === SemanticDiffElementType.REPLACE) {
     if (wordsToString(element.expected) === wordsToString(element.actual))
       throw "expected and actual in a replace must not be the same"
   }
 }
 
-export function diffElementToString(element: DiffElement): string {
+export function semanticDiffElementToString(element: SemanticDiffElement): string {
   switch (element.type) {
-    case DiffElementType.EQUAL:
+    case SemanticDiffElementType.EQUAL:
       return `=${wordsToString(element.words)}`
-    case DiffElementType.INSERT:
+    case SemanticDiffElementType.INSERT:
       return `+${wordsToString(element.actual)}`
-    case DiffElementType.OMIT:
+    case SemanticDiffElementType.OMIT:
       return `-${wordsToString(element.expected)}`
-    case DiffElementType.REPLACE:
+    case SemanticDiffElementType.REPLACE:
       return `→${wordsToString(element.expected)}→${wordsToString(element.actual)}`
-    case DiffElementType.IGNORE:
+    case SemanticDiffElementType.IGNORE:
       return `?${wordsToString(element.expected)}`
   }
 }
 
-export function stringToDiffElement(string: string): DiffElement {
+export function stringToSemanticDiffElement(string: string): SemanticDiffElement {
   const regex = string.match(/^([=+-→?])\s*(.*)/)
   if (!regex) throw "invalid diff element string"
   const [, type, wordsString] = regex
   switch (type) {
-    case DiffElementType.EQUAL:
-      return { type: DiffElementType.EQUAL, words: stringToWords(wordsString) }
-    case DiffElementType.INSERT:
-      return { type: DiffElementType.INSERT, actual: stringToWords(wordsString) }
-    case DiffElementType.OMIT:
-      return { type: DiffElementType.OMIT, expected: stringToWords(wordsString) }
-    case DiffElementType.REPLACE:
+    case SemanticDiffElementType.EQUAL:
+      return { type: SemanticDiffElementType.EQUAL, words: stringToWords(wordsString) }
+    case SemanticDiffElementType.INSERT:
+      return { type: SemanticDiffElementType.INSERT, actual: stringToWords(wordsString) }
+    case SemanticDiffElementType.OMIT:
+      return { type: SemanticDiffElementType.OMIT, expected: stringToWords(wordsString) }
+    case SemanticDiffElementType.REPLACE:
       const [expected, actual] = wordsString.split("→")
       return {
-        type: DiffElementType.REPLACE,
+        type: SemanticDiffElementType.REPLACE,
         expected: stringToWords(expected),
         actual: stringToWords(actual),
       }
-    case DiffElementType.IGNORE:
-      return { type: DiffElementType.IGNORE, expected: stringToWords(wordsString) }
+    case SemanticDiffElementType.IGNORE:
+      return { type: SemanticDiffElementType.IGNORE, expected: stringToWords(wordsString) }
     default:
       throw `invalid diff element type: ${type}`
   }

@@ -1,36 +1,33 @@
-import diffWordsDeterministically from "./algorithm/diffWords"
-import { validateDiff } from "./types/diff"
-import type { Diff } from "./types/diff"
+import diffWordsDeterministically from "./algorithm/deterministic"
+import { validateSemanticDiff } from "./types/SemanticDiff"
+import type { SemanticDiff } from "./types/SemanticDiff"
 import { stringToWords, Word } from "./types/Word"
 
 export type DiffMode = "deterministic" | "llm"
 
-export function diffStrings(
-  expected: string,
-  actual: string,
-  mode: DiffMode = "deterministic"
-): Diff {
-  const expectedWords = stringToWords(expected)
-  const actualWords = stringToWords(actual)
-  return diffWords(expectedWords, actualWords, mode)
-}
+export function semanticDiff(
+  expected: string | Word[],
+  actual: string | Word[],
+  mode: DiffMode = "deterministic",
+): SemanticDiff {
+  const expectedWords = typeof expected === "string" ? stringToWords(expected) : expected
+  const actualWords = typeof actual === "string" ? stringToWords(actual) : actual
 
-function diffWords(expectedWords: Word[], actualWords: Word[], mode: DiffMode): Diff {
   if (mode === "llm") throw "llm mode not implemented"
   const result = diffWordsDeterministically(expectedWords, actualWords)
 
   // validate: diff must be in a proper format, not just typed correctly
-  validateDiff(result)
+  validateSemanticDiff(result)
   // validate: expected+actual words in diff must be same as inputted
   const diffExpectedWords = result.flatMap((element) =>
-    "expected" in element ? element.expected : "words" in element ? element.words : []
+    "expected" in element ? element.expected : "words" in element ? element.words : [],
   )
   if (diffExpectedWords.map((w) => w.text).join(" ") !== expectedWords.map((w) => w.text).join(" "))
     throw `expected words in diff must be same as inputted [${diffExpectedWords
       .map((w) => w.text)
       .join(" ")} !== ${expectedWords.map((w) => w.text).join(" ")}]`
   const diffActualWords = result.flatMap((element) =>
-    "actual" in element ? element.actual : "words" in element ? element.words : []
+    "actual" in element ? element.actual : "words" in element ? element.words : [],
   )
   if (diffActualWords.map((w) => w.text).join(" ") !== actualWords.map((w) => w.text).join(" "))
     throw `actual words in diff must be same as inputted [${diffActualWords

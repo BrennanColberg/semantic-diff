@@ -1,18 +1,24 @@
 import { test, expect, describe } from "bun:test"
-import { stringToDiff } from "../types/diff"
-import { diffStrings } from "../harness"
+import { stringToSemanticDiff } from "../types/SemanticDiff"
+import { semanticDiff } from ".."
 
 describe("allEqual", () => {
   test("one word", () => {
-    expect(diffStrings("hello", "hello")).toEqual(stringToDiff("= hello"))
+    expect(semanticDiff("hello", "hello")).toEqual(stringToSemanticDiff("= hello"))
   })
   test("multiple words", () => {
-    expect(diffStrings("hello world", "hello world")).toEqual(stringToDiff("= hello world"))
+    expect(semanticDiff("hello world", "hello world")).toEqual(
+      stringToSemanticDiff("= hello world"),
+    )
   })
   test("different capitalization", () => {
-    expect(diffStrings("Hello World", "hello world")).toEqual(stringToDiff("= hello world"))
+    expect(semanticDiff("Hello World", "hello world")).toEqual(
+      stringToSemanticDiff("= hello world"),
+    )
   })
   test("different punctuation", () => {
-    expect(diffStrings("Hello, world!", "hello world")).toEqual(stringToDiff("= hello world"))
+    expect(semanticDiff("Hello, world!", "hello world")).toEqual(
+      stringToSemanticDiff("= hello world"),
+    )
   })
 })
