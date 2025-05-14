@@ -4,9 +4,9 @@ export enum DiffElementType {
   /** Text that matches in the expected and actual. */
   EQUAL = "=",
   /** Text in the expected that was not in the actual. */
-  ADD = "+",
+  INSERT = "+",
   /** Text in the actual that was not in the expected. */
-  REMOVE = "-",
+  OMIT = "-",
   /** Text in the expected that was different in the actual. */
   REPLACE = "→",
   /** Text in the expected that was not attempted, or was skipped. */
@@ -15,8 +15,8 @@ export enum DiffElementType {
 
 export type DiffElement =
   | { type: DiffElementType.EQUAL; words: Word[] }
-  | { type: DiffElementType.ADD; actual: Word[] }
-  | { type: DiffElementType.REMOVE; expected: Word[] }
+  | { type: DiffElementType.INSERT; actual: Word[] }
+  | { type: DiffElementType.OMIT; expected: Word[] }
   | { type: DiffElementType.REPLACE; expected: Word[]; actual: Word[] }
   | { type: DiffElementType.IGNORE; expected: Word[] }
 
@@ -40,9 +40,9 @@ export function diffElementToString(element: DiffElement): string {
   switch (element.type) {
     case DiffElementType.EQUAL:
       return `= ${wordsToString(element.words)}`
-    case DiffElementType.ADD:
+    case DiffElementType.INSERT:
       return `+ ${wordsToString(element.actual)}`
-    case DiffElementType.REMOVE:
+    case DiffElementType.OMIT:
       return `- ${wordsToString(element.expected)}`
     case DiffElementType.REPLACE:
       return `→ ${wordsToString(element.expected)} → ${wordsToString(element.actual)}`
@@ -58,10 +58,10 @@ export function stringToDiffElement(string: string): DiffElement {
   switch (type) {
     case DiffElementType.EQUAL:
       return { type: DiffElementType.EQUAL, words: stringToWords(wordsString) }
-    case DiffElementType.ADD:
-      return { type: DiffElementType.ADD, actual: stringToWords(wordsString) }
-    case DiffElementType.REMOVE:
-      return { type: DiffElementType.REMOVE, expected: stringToWords(wordsString) }
+    case DiffElementType.INSERT:
+      return { type: DiffElementType.INSERT, actual: stringToWords(wordsString) }
+    case DiffElementType.OMIT:
+      return { type: DiffElementType.OMIT, expected: stringToWords(wordsString) }
     case DiffElementType.REPLACE:
       const [expected, actual] = wordsString.split("→")
       return {

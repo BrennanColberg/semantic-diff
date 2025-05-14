@@ -10,6 +10,7 @@
     "test:watch": "bun test --watch"
   },
   "dependencies": {
-    "@types/bun": "^1.2.13"
+    "@types/bun": "^1.2.13",
+    "diff": "8.0.1"
   }
 }

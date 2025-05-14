@@ -1,6 +1,7 @@
 import {
   DiffElement,
   diffElementToString,
+  DiffElementType,
   stringToDiffElement,
   validateDiffElement,
 } from "./DiffElement"
@@ -17,6 +18,15 @@ export function validateDiff(diff: Diff): void | never {
   diff.forEach((element, index) => {
     if (index === 0) return
     if (element.type === diff[index - 1].type) throw "adjacent elements have the same type"
+  })
+
+  // no insert should never be next to an omit; instead, put a replace
+  // TODO eventually this might be appropriate in niche semantic cases
+  diff.forEach((element, index) => {
+    if (element.type === DiffElementType.INSERT && diff[index + 1]?.type === DiffElementType.OMIT)
+      throw "insert and omit are adjacent"
+    if (element.type === DiffElementType.OMIT && diff[index + 1]?.type === DiffElementType.INSERT)
+      throw "omit and insert are adjacent"
   })
 }
 
