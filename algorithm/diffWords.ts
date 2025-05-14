@@ -19,7 +19,20 @@ export default function (expectedWords: Word[], actualWords: Word[]): Diff {
     throw `unhandled simple diff case: added & removed: ${d.added} & ${d.removed}`
   })
 
-  // if there are any adjacent adds+omits, combine them
+  // if there are any adjacent adds+omits, take them out in favor of a replace
+  for (let i = 0; i < result.length - 1; i++) {
+    const thisElement = result[i]
+    const nextElement = result[i + 1]
+    // note: coming from the simple diff, omits will always precede inserts
+    if (thisElement.type === DiffElementType.OMIT && nextElement.type === DiffElementType.INSERT) {
+      result.splice(i, 2, {
+        type: DiffElementType.REPLACE,
+        expected: thisElement.expected,
+        actual: nextElement.actual,
+      })
+      i--
+    }
+  }
 
   return result
 }

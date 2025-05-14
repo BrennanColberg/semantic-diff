@@ -24,9 +24,9 @@ export function validateDiff(diff: Diff): void | never {
   // TODO eventually this might be appropriate in niche semantic cases
   diff.forEach((element, index) => {
     if (element.type === DiffElementType.INSERT && diff[index + 1]?.type === DiffElementType.OMIT)
-      throw "insert and omit are adjacent"
+      throw `insert and omit are adjacent:\n${diffToString(diff)}`
     if (element.type === DiffElementType.OMIT && diff[index + 1]?.type === DiffElementType.INSERT)
-      throw "omit and insert are adjacent"
+      throw `omit and insert are adjacent:\n${diffToString(diff)}`
   })
 }
 
