@@ -1,4 +1,9 @@
-import { DiffElement, diffElementToString, validateDiffElement } from "./DiffElement"
+import {
+  DiffElement,
+  diffElementToString,
+  stringToDiffElement,
+  validateDiffElement,
+} from "./DiffElement"
 
 export type Diff = DiffElement[]
 
@@ -17,4 +22,8 @@ export function validateDiff(diff: Diff): void | never {
 
 export function diffToString(diff: Diff): string {
   return diff.map(diffElementToString).join("\n")
+}
+
+export function stringToDiff(string: string): Diff {
+  return string.split("\n").map(stringToDiffElement)
 }

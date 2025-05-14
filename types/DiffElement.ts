@@ -1,4 +1,4 @@
-import { stringToWord, stringToWords, validateWord, Word, wordsToString } from "./Word"
+import { stringToWords, validateWord, Word, wordsToString } from "./Word"
 
 export enum DiffElementType {
   /** Text that matches in the expected and actual. */
@@ -14,6 +14,7 @@ export enum DiffElementType {
 }
 
 export type DiffElement =
+  | { type: DiffElementType.EQUAL; words: Word[] }
   | { type: DiffElementType.ADD; actual: Word[] }
   | { type: DiffElementType.REMOVE; expected: Word[] }
   | { type: DiffElementType.REPLACE; expected: Word[]; actual: Word[] }
@@ -23,9 +24,11 @@ export function validateDiffElement(element: DiffElement): void | never {
   // every word must be valid
   if ("actual" in element) element.actual.forEach(validateWord)
   if ("expected" in element) element.expected.forEach(validateWord)
+  if ("words" in element) element.words.forEach(validateWord)
   // every word array must have at least one word
   if ("actual" in element && element.actual.length === 0) throw "actual has no words"
   if ("expected" in element && element.expected.length === 0) throw "expected has no words"
+  if ("words" in element && element.words.length === 0) throw "words has no words"
   // expected/actual in a replace must not be the same
   if (element.type === DiffElementType.REPLACE) {
     if (wordsToString(element.expected) === wordsToString(element.actual))
@@ -35,6 +38,8 @@ export function validateDiffElement(element: DiffElement): void | never {
 
 export function diffElementToString(element: DiffElement): string {
   switch (element.type) {
+    case DiffElementType.EQUAL:
+      return `= ${wordsToString(element.words)}`
     case DiffElementType.ADD:
       return `+ ${wordsToString(element.actual)}`
     case DiffElementType.REMOVE:
@@ -51,6 +56,8 @@ export function stringToDiffElement(string: string): DiffElement {
   if (!regex) throw "invalid diff element string"
   const [, type, wordsString] = regex
   switch (type) {
+    case DiffElementType.EQUAL:
+      return { type: DiffElementType.EQUAL, words: stringToWords(wordsString) }
     case DiffElementType.ADD:
       return { type: DiffElementType.ADD, actual: stringToWords(wordsString) }
     case DiffElementType.REMOVE:
