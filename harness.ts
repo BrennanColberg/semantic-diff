@@ -1,19 +1,19 @@
-import diffWordsDeterministically from "../algorithm/diffWords"
-import diffWordsViaLLM from "../prompt/diffWords"
-import { validateDiff } from "../types/diff"
-import type { SemanticDiff, Word } from "../types/SemanticDiff"
-import { textToWords } from "../types/word"
+import diffWordsDeterministically from "./algorithm/diffWords"
+import diffWordsViaLLM from "./prompt/diffWords"
+import { validateDiff } from "./types/diff"
+import type { Diff } from "./types/diff"
+import { stringToWords, Word } from "./types/Word"
 
 export type DiffMode = "deterministic" | "llm"
 
-export function diffStrings(expected: string, actual: string, mode: DiffMode): SemanticDiff {
-  const expectedWords = textToWords(expected)
-  const actualWords = textToWords(actual)
+export function diffStrings(expected: string, actual: string, mode: DiffMode): Diff {
+  const expectedWords = stringToWords(expected)
+  const actualWords = stringToWords(actual)
   return diffWords(expectedWords, actualWords, mode)
 }
 
-function diffWords(expectedWords: Word[], actualWords: Word[], mode: DiffMode): SemanticDiff {
-  let result: SemanticDiff = {
+function diffWords(expectedWords: Word[], actualWords: Word[], mode: DiffMode): Diff {
+  let result: Diff = {
     deterministic: diffWordsDeterministically,
     llm: diffWordsViaLLM,
   }[mode](expectedWords, actualWords)

@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test"
-import { textToWords, validateWord } from "./word"
+import { stringToWords, validateWord } from "./Word"
 
 test("validateWord", () => {
   expect(() => validateWord({ text: "hello" })).not.toThrow()
@@ -9,6 +9,6 @@ test("validateWord", () => {
   expect(() => validateWord({ text: "Hello" })).toThrow()
 })
 
-test("textToWords", () => {
-  expect(textToWords("Hello, world!")).toEqual([{ text: "hello" }, { text: "world" }])
+test("stringToWords", () => {
+  expect(stringToWords("Hello, world!")).toEqual([{ text: "hello" }, { text: "world" }])
 })

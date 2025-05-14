@@ -1,8 +1,9 @@
-import type { SemanticDiff, Word } from "../types/SemanticDiff"
+import type { Diff } from "../types/diff"
+import { Word } from "../types/Word"
 
-export default function (expectedWords: Word[], actualWords: Word[]): SemanticDiff {
+export default function (expectedWords: Word[], actualWords: Word[]): Diff {
   // TODO implement :)
-  const result: SemanticDiff = []
+  const result: Diff = []
 
   return result
 }
