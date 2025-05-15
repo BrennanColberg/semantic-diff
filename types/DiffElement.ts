@@ -10,7 +10,7 @@ export enum DiffElementType {
   /** Text in the expected that was different in the actual. */
   REPLACE = "→",
   /** Text in the expected that was not attempted, or was skipped. */
-  IGNORE = "?",
+  IGNORE = "*",
 }
 
 export type DiffElement =
@@ -18,7 +18,7 @@ export type DiffElement =
   | { type: "+"; actual: Word[] }
   | { type: "-"; expected: Word[] }
   | { type: "→"; expected: Word[]; actual: Word[] }
-  | { type: "?"; expected: Word[] }
+  | { type: "*"; expected: Word[] }
 
 export function validateDiffElement(element: DiffElement): void | never {
   // every word must be valid
@@ -46,13 +46,13 @@ export function diffElementToString(element: DiffElement): string {
       return `-${wordsToString(element.expected)}`
     case "→":
       return `→${wordsToString(element.expected)}→${wordsToString(element.actual)}`
-    case "?":
-      return `?${wordsToString(element.expected)}`
+    case "*":
+      return `*${wordsToString(element.expected)}`
   }
 }
 
 export function stringToDiffElement(string: string): DiffElement {
-  const regex = string.match(/^([=+-→?])\s*(.*)/)
+  const regex = string.match(/^([=+-→*])\s*(.*)/)
   if (!regex) throw "invalid diff element string"
   const [, type, wordsString] = regex
   switch (type) {
@@ -65,8 +65,8 @@ export function stringToDiffElement(string: string): DiffElement {
     case "→":
       const [expected, actual] = wordsString.split("→")
       return { type: "→", expected: stringToWords(expected), actual: stringToWords(actual) }
-    case "?":
-      return { type: "?", expected: stringToWords(wordsString) }
+    case "*":
+      return { type: "*", expected: stringToWords(wordsString) }
     default:
       throw `invalid diff element type: ${type}`
   }

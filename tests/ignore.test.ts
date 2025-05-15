@@ -4,9 +4,9 @@ import { semanticDiff } from ".."
 
 describe("ignore", () => {
   test("at start", () => {
-    expect(semanticDiff("one two three", "two three")).toEqual(stringToDiff("? one\n= two three"))
+    expect(semanticDiff("one two three", "two three")).toEqual(stringToDiff("* one\n= two three"))
   })
   test("at end", () => {
-    expect(semanticDiff("one two three", "one two")).toEqual(stringToDiff("= one two\n? three"))
+    expect(semanticDiff("one two three", "one two")).toEqual(stringToDiff("= one two\n* three"))
   })
 })

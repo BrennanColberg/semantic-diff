@@ -34,8 +34,8 @@ export default function (expectedWords: Word[], actualWords: Word[]): Diff {
   }
 
   // any leading or trailing omits should be ignores instead
-  if (result[0]?.type === "-") (result[0] as DiffElement).type = "?"
-  if (result[result.length - 1]?.type === "-") (result[result.length - 1] as DiffElement).type = "?"
+  if (result[0]?.type === "-") (result[0] as DiffElement).type = "*"
+  if (result[result.length - 1]?.type === "-") (result[result.length - 1] as DiffElement).type = "*"
 
   return result
 }
