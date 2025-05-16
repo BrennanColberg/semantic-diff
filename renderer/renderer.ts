@@ -12,21 +12,37 @@ export type DiffRenderer<T> = {
 }
 
 export function renderDiff<T>(diff: Diff, renderer: DiffRenderer<T>): T {
-  return diff.reduce((acc, element) => {
+  return diff.reduce((acc, element, index, array) => {
+    const trailingWhitespace = index < array.length - 1 ? " " : ""
     switch (element.type) {
       case "=":
-        return renderer.join(acc, renderer.renderEqual(wordsToString(element.words)))
+        return renderer.join(
+          acc,
+          renderer.renderEqual(wordsToString(element.words) + trailingWhitespace),
+        )
       case "+":
-        return renderer.join(acc, renderer.renderInsert(wordsToString(element.actual)))
+        return renderer.join(
+          acc,
+          renderer.renderInsert(wordsToString(element.actual) + trailingWhitespace),
+        )
       case "-":
-        return renderer.join(acc, renderer.renderOmit(wordsToString(element.expected)))
+        return renderer.join(
+          acc,
+          renderer.renderOmit(wordsToString(element.expected) + trailingWhitespace),
+        )
       case "→":
         return renderer.join(
           acc,
-          renderer.renderReplace(wordsToString(element.expected), wordsToString(element.actual)),
+          renderer.renderReplace(
+            wordsToString(element.expected),
+            wordsToString(element.actual) + trailingWhitespace,
+          ),
         )
       case "*":
-        return renderer.join(acc, renderer.renderIgnore(wordsToString(element.expected)))
+        return renderer.join(
+          acc,
+          renderer.renderIgnore(wordsToString(element.expected) + trailingWhitespace),
+        )
     }
   }, renderer.seed)
 }

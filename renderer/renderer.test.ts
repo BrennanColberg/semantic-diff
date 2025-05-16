@@ -35,4 +35,78 @@ describe("full sole elements", () => {
   })
 })
 
-describe("equal is more greedy with whitespace than insert/omit", () => {})
+describe("equal whitespace greediness (> all but ignore)", () => {
+  test("insert (after equal)", () => {
+    const diff = stringToDiff("=one two\n+three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[=one two ][+three]")
+  })
+  test("insert (before equal)", () => {
+    const diff = stringToDiff("+one two\n=three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[+one two][= three]")
+  })
+  test("omit (after equal)", () => {
+    const diff = stringToDiff("=one two\n-three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[=one two ][-three]")
+  })
+  test("omit (before equal)", () => {
+    const diff = stringToDiff("-one two\n=three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[-one two][= three]")
+  })
+  test("replace (after equal)", () => {
+    const diff = stringToDiff("=one two\n→three→four")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[=one two ][three→four]")
+  })
+  test("replace (before equal)", () => {
+    const diff = stringToDiff("→one→two\n=three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[one→two][= three]")
+  })
+})
+
+describe("ignore whitespace greediness (> all)", () => {
+  test("equal (after ignore)", () => {
+    const diff = stringToDiff("*one two\n=three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[*one two ][=three]")
+  })
+  test("equal (before ignore)", () => {
+    const diff = stringToDiff("=one two\n*three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[=one two][* three]")
+  })
+  test("insert (after ignore)", () => {
+    const diff = stringToDiff("*one two\n+three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[*one two ][+three]")
+  })
+  test("insert (before ignore)", () => {
+    const diff = stringToDiff("+one two\n*three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[+one two][* three]")
+  })
+  test("omit (after ignore)", () => {
+    const diff = stringToDiff("*one two\n-three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[*one two ][-three]")
+  })
+  test("omit (before ignore)", () => {
+    const diff = stringToDiff("-one two\n*three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[-one two][* three]")
+  })
+  test("replace (after ignore)", () => {
+    const diff = stringToDiff("*one two\n→three→four")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[*one two ][three→four]")
+  })
+  test("replace (before ignore)", () => {
+    const diff = stringToDiff("→one→two\n*three")
+    const result = renderDiff(diff, TEST_RENDERER)
+    expect(result).toEqual("[one→two][* three]")
+  })
+})
