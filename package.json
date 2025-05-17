@@ -1,6 +1,6 @@
 {
   "name": "semantic-diff",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Tool for describing differences between two strings.",
   "bugs": "https://github.com/BrennanColberg/semantic-diff/issues",
   "repository": "github:BrennanColberg/semantic-diff",

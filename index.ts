@@ -15,6 +15,12 @@ export type SemanticDiffElement = DiffElement
 export type SemanticDiffElementType = DiffElementType
 export type SemanticDiffWord = Word
 
+// re-export renderer
+export {
+  renderDiff as renderSemanticDiff,
+  type DiffRenderer as SemanticDiffRenderer,
+} from "./renderer/renderer"
+
 export function semanticDiff(
   expected: string | Word[],
   actual: string | Word[],
